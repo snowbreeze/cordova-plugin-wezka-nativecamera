@@ -328,7 +328,14 @@ public class CameraActivity extends Activity implements SensorEventListener {
     public void onResume() {
         super.onResume();
         if (Camera.getNumberOfCameras() >= 1) {
-            camera = Camera.open(cam);
+            try {
+                camera = Camera.open(cam);
+            } catch (RuntimeException ex) {
+                // Camera opening error. Warn user
+                Toast.makeText(getApplicationContext(), 
+                    "Unable to use camera", Toast.LENGTH_SHORT).show();
+                Log.e(TAG, "Camera open error: " + ex.getMessage());
+            }            
         }
 
         // Initialize preview if surface still exists
@@ -354,10 +361,12 @@ public class CameraActivity extends Activity implements SensorEventListener {
 
     @Override
     public void onPause() {
-        if (inPreview) {
-            camera.stopPreview();
+        if (camera != null) {
+            if (inPreview) {
+                camera.stopPreview();
+            }
+            camera.release();
         }
-        camera.release();
         camera = null;
         inPreview = false;
         super.onPause();
