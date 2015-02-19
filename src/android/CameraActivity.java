@@ -154,32 +154,36 @@ public class CameraActivity extends Activity implements SensorEventListener {
 
                 Parameters parameters = camera.getParameters();
 
-                if (parameters.getMaxNumFocusAreas() > 0) {
+                try {
+                    if (parameters.getMaxNumFocusAreas() > 0) {
 
-                    if(event.getX() - viewfinderHalfPx < 0) {
-                        viewfinder.setX(0);
-                    } else if(event.getX() + viewfinderHalfPx > screenWidth) {
-                        viewfinder.setX(screenWidth - viewfinderHalfPx*2);
-                    } else {
-                        viewfinder.setX(event.getX() - viewfinderHalfPx);
+                        if(event.getX() - viewfinderHalfPx < 0) {
+                            viewfinder.setX(0);
+                        } else if(event.getX() + viewfinderHalfPx > screenWidth) {
+                            viewfinder.setX(screenWidth - viewfinderHalfPx*2);
+                        } else {
+                            viewfinder.setX(event.getX() - viewfinderHalfPx);
+                        }
+
+                        if(event.getY() - viewfinderHalfPx < 0) {
+                            viewfinder.setY(0);
+                        } else if(event.getY() + viewfinderHalfPx > screenHeight - pxFromDp(125)) {
+                            viewfinder.setY((screenHeight - pxFromDp(125)) - viewfinderHalfPx*2);
+                        } else {
+                            viewfinder.setY(event.getY() - viewfinderHalfPx);
+                        }
+
+                        List<Camera.Area> focusArea = new ArrayList<Camera.Area>();
+                        focusArea.add(new Camera.Area(focusRect, 750));
+                        parameters.setFocusAreas(focusArea);
+                        if(parameters.getMaxNumMeteringAreas() > 0) {
+                            parameters.setMeteringAreas(focusArea);
+                        }
+
+                        camera.setParameters(parameters);
                     }
-
-                    if(event.getY() - viewfinderHalfPx < 0) {
-                        viewfinder.setY(0);
-                    } else if(event.getY() + viewfinderHalfPx > screenHeight - pxFromDp(125)) {
-                        viewfinder.setY((screenHeight - pxFromDp(125)) - viewfinderHalfPx*2);
-                    } else {
-                        viewfinder.setY(event.getY() - viewfinderHalfPx);
-                    }
-
-                    List<Camera.Area> focusArea = new ArrayList<Camera.Area>();
-                    focusArea.add(new Camera.Area(focusRect, 750));
-                    parameters.setFocusAreas(focusArea);
-                    if(parameters.getMaxNumMeteringAreas() > 0) {
-                        parameters.setMeteringAreas(focusArea);
-                    }
-
-                    camera.setParameters(parameters);
+                } catch (NoSuchMethodError) {
+                    // Ignore as old Androids do not support
                 }
                 return true;
             }
