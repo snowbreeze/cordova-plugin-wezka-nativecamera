@@ -182,7 +182,7 @@ public class CameraActivity extends Activity implements SensorEventListener {
 
                         camera.setParameters(parameters);
                     }
-                } catch (NoSuchMethodError) {
+                } catch (NoSuchMethodError ex) {
                     // Ignore as old Androids do not support
                 }
                 return true;
