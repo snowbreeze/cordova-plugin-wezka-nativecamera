@@ -123,6 +123,7 @@ public class NativeCameraLauncher extends CordovaPlugin {
 	public void onActivityResult(int requestCode, int resultCode, Intent intent) {
 		// If image available
 		if (resultCode == Activity.RESULT_OK) {
+			int rotate = 0;
 			try {
 				// Create an ExifHelper to save the exif data that is lost
 				// during compression
@@ -130,6 +131,7 @@ public class NativeCameraLauncher extends CordovaPlugin {
 				exif.createInFile(getTempDirectoryPath(this.cordova.getActivity().getApplicationContext())
 						+ "/Pic.jpg");
 				exif.readExifData();
+				rotate = exif.getOrientation();
 
 				// Read in bitmap of captured image
 				Bitmap bitmap;
@@ -153,6 +155,7 @@ public class NativeCameraLauncher extends CordovaPlugin {
 
 				// Add compressed version of captured image to returned media
 				// store Uri
+				bitmap = getRotatedBitmap(rotate, bitmap, exif);
 				Log.i(LOG_TAG, "URI: " + this.imageUri.toString());
 				OutputStream os = this.cordova.getActivity().getContentResolver()
 						.openOutputStream(this.imageUri);
@@ -224,6 +227,24 @@ public class NativeCameraLauncher extends CordovaPlugin {
 		return Bitmap.createScaledBitmap(bitmap, newWidth, newHeight, true);
 	}
 	
+	private Bitmap getRotatedBitmap(int rotate, Bitmap bitmap, ExifHelper exif) {
+        Matrix matrix = new Matrix();
+        matrix.setRotate(rotate);
+        try
+        {
+            bitmap = Bitmap.createBitmap(bitmap, 0, 0, bitmap.getWidth(), bitmap.getHeight(), matrix, true);
+            exif.resetOrientation();
+        }
+        catch (OutOfMemoryError oom)
+        {
+            // You can run out of memory if the image is very large:
+            // http://simonmacdonald.blogspot.ca/2012/07/change-to-camera-code-in-phonegap-190.html
+            // If this happens, simply do not rotate the image and return it unmodified.
+            // If you do not catch the OutOfMemoryError, the Android app crashes.
+        }
+        return bitmap;
+    }
+
 	private String getTempDirectoryPath(Context ctx) {
 		File cache = null;
 
