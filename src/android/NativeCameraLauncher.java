@@ -24,7 +24,7 @@ import java.io.ByteArrayOutputStream;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 
-import org.apache.cordova.ExifHelper;
+import com.wezka.nativecamera.ExifHelper;
 import org.apache.cordova.CallbackContext;
 import org.apache.cordova.CordovaInterface;
 import org.apache.cordova.CordovaPlugin;
