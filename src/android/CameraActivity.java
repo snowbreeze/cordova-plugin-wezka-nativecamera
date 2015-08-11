@@ -274,6 +274,9 @@ public class CameraActivity extends Activity implements SensorEventListener {
 
     @Override
     public boolean onKeyDown(int keyCode, KeyEvent event) {
+        if (camera == null)
+            return false;
+
         if (keyCode == KeyEvent.KEYCODE_VOLUME_DOWN){
             Parameters p = camera.getParameters();
             p.setRotation(degrees);
