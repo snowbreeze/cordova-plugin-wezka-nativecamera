@@ -11,7 +11,7 @@
 		distributed under the License is distributed on an "AS IS" BASIS,
 		WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 		See the License for the specific language governing permissions and
-   		limitations under the License.   			
+   		limitations under the License.
  */
 
 package com.wezka.nativecamera;
@@ -241,7 +241,7 @@ public class CameraActivity extends Activity implements SensorEventListener {
             public void onClick(View v) {
                 if (pressed || camera == null)
                     return;
-                
+
                 Parameters p = camera.getParameters();
                 p.setRotation(degrees);
                 camera.setParameters(p);
@@ -255,18 +255,18 @@ public class CameraActivity extends Activity implements SensorEventListener {
                                 camera.takePicture(null, null, mPicture);
                             } catch (RuntimeException ex) {
                                 // takePicture crash. Ignore.
-                                Toast.makeText(getApplicationContext(), 
-                                    "Error taking picture", Toast.LENGTH_SHORT).show();
+                                Toast.makeText(getApplicationContext(),
+                                    "Error taking picture1", Toast.LENGTH_SHORT).show();
                                 Log.e(TAG, "Auto-focus crash");
                             }
                         }
                     });
                 } catch (RuntimeException ex) {
                     // Auto focus crash. Ignore.
-                    Toast.makeText(getApplicationContext(), 
-                        "Error focusing", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(getApplicationContext(),
+                        "Error focusing2", Toast.LENGTH_SHORT).show();
                     Log.e(TAG, "Auto-focus crash");
-                }            
+                }
             }
         });
 
@@ -293,18 +293,18 @@ public class CameraActivity extends Activity implements SensorEventListener {
                             camera.takePicture(null, null, mPicture);
                         } catch (RuntimeException ex) {
                             // takePicture crash. Ignore.
-                            Toast.makeText(getApplicationContext(), 
-                                "Error taking picture", Toast.LENGTH_SHORT).show();
+                            Toast.makeText(getApplicationContext(),
+                                "Error taking picture3", Toast.LENGTH_SHORT).show();
                             Log.e(TAG, "Auto-focus crash");
                         }
                     }
                 });
             } catch (RuntimeException ex) {
                 // Auto focus crash. Ignore.
-                Toast.makeText(getApplicationContext(), 
-                    "Error focusing", Toast.LENGTH_SHORT).show();
+                Toast.makeText(getApplicationContext(),
+                    "Error focusing4", Toast.LENGTH_SHORT).show();
                 Log.e(TAG, "Auto-focus crash");
-            }            
+            }
             return true;
         } else {
             return super.onKeyDown(keyCode, event);
@@ -321,9 +321,9 @@ public class CameraActivity extends Activity implements SensorEventListener {
                 fos.write(data);
                 fos.close();
             } catch (FileNotFoundException e) {
-                Log.d(TAG, "File not found: " + e.getMessage());
+                Log.d(TAG, "File not found: 5" + e.getMessage());
             } catch (IOException e) {
-                Log.d(TAG, "Error accessing file: " + e.getMessage());
+                Log.d(TAG, "Error accessing file: 6" + e.getMessage());
             }
             setResult(RESULT_OK);
             pressed = false;
@@ -339,10 +339,10 @@ public class CameraActivity extends Activity implements SensorEventListener {
                 camera = Camera.open(cam);
             } catch (RuntimeException ex) {
                 // Camera opening error. Warn user
-                Toast.makeText(getApplicationContext(), 
-                    "Unable to use camera", Toast.LENGTH_SHORT).show();
+                Toast.makeText(getApplicationContext(),
+                    "Unable to use camera7", Toast.LENGTH_SHORT).show();
                 Log.e(TAG, "Camera open error: " + ex.getMessage());
-            }            
+            }
         }
 
         // Initialize preview if surface still exists
@@ -574,7 +574,3 @@ public class CameraActivity extends Activity implements SensorEventListener {
     }
 
 }
-
-
-
-
