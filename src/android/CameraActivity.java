@@ -320,6 +320,7 @@ public class CameraActivity extends Activity implements SensorEventListener {
                 FileOutputStream fos = new FileOutputStream(pictureFile);
                 fos.write(data);
                 fos.close();
+                Log.d(TAG, "File written to filesystem. ");
             } catch (FileNotFoundException e) {
                 Log.d(TAG, "File not found: 5" + e.getMessage());
             } catch (IOException e) {
