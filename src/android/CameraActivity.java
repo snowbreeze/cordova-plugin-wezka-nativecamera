@@ -237,37 +237,6 @@ public class CameraActivity extends Activity implements SensorEventListener {
             });
         }
 
-        private attemptToTakePicture() {
-            if (pressed || camera == null)
-                return false;
-            Parameters p = camera.getParameters();
-            p.setRotation(degrees);
-            camera.setParameters(p);
-
-            pressed = true;
-            // Auto-focus first, catching rare autofocus error
-            try {
-                camera.autoFocus(new AutoFocusCallback() {
-                    public void onAutoFocus(boolean success, Camera camera) {
-                        // Catch take picture error
-                        try {
-                            camera.takePicture(null, null, mPicture);
-                        } catch (RuntimeException ex) {
-                            // takePicture crash. Ignore.
-                            Toast.makeText(getApplicationContext(),
-                                "Error taking picture3", Toast.LENGTH_SHORT).show();
-                            Log.e(TAG, "Auto-focus crash");
-                        }
-                    }
-                });
-            } catch (RuntimeException ex) {
-                // Auto focus crash. Ignore.
-                Toast.makeText(getApplicationContext(),
-                    "Error focusing4", Toast.LENGTH_SHORT).show();
-                Log.e(TAG, "Auto-focus crash");
-            }
-        }
-
         captureButton.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
                 if (pressed || camera == null)
@@ -288,6 +257,34 @@ public class CameraActivity extends Activity implements SensorEventListener {
             return true;
         } else {
             return super.onKeyDown(keyCode, event);
+        }
+    }
+
+    private void attemptToTakePicture() {
+        Parameters p = camera.getParameters();
+        p.setRotation(degrees);
+        camera.setParameters(p);
+        pressed = true;
+        // Auto-focus first, catching rare autofocus error
+        try {
+            camera.autoFocus(new AutoFocusCallback() {
+                public void onAutoFocus(boolean success, Camera camera) {
+                    // Catch take picture error
+                    try {
+                        camera.takePicture(null, null, mPicture);
+                    } catch (RuntimeException ex) {
+                        // takePicture crash. Ignore.
+                        Toast.makeText(getApplicationContext(),
+                            "Error taking picture3", Toast.LENGTH_SHORT).show();
+                        Log.e(TAG, "Auto-focus crash");
+                    }
+                }
+            });
+        } catch (RuntimeException ex) {
+            // Auto focus crash. Ignore.
+            Toast.makeText(getApplicationContext(),
+                "Error focusing4", Toast.LENGTH_SHORT).show();
+            Log.e(TAG, "Auto-focus crash");
         }
     }
 
