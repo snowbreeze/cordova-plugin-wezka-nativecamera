@@ -72,6 +72,7 @@ public class NativeCameraLauncher extends CordovaPlugin {
 	private File photo;
 	private static final String _DATA = "_data";
 	private CallbackContext callbackContext;
+	private String date = null;
 
 	public NativeCameraLauncher() {
 	}
