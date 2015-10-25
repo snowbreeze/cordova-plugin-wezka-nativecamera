@@ -181,5 +181,5 @@ public class ExifHelper {
 
     public void resetOrientation() {
         this.orientation = "" + ExifInterface.ORIENTATION_NORMAL;
-    }    
+    } 
 }

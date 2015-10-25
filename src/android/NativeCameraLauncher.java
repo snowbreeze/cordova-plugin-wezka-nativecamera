@@ -141,7 +141,7 @@ public class NativeCameraLauncher extends CordovaPlugin {
 				// during compression
 				ExifHelper exif = new ExifHelper();
 				exif.createInFile(getTempDirectoryPath(this.cordova.getActivity().getApplicationContext())
-						+ "/Pic.jpg");
+						+ "/Pic-" + this.date + ".jpg");
 				exif.readExifData();
 				rotate = exif.getOrientation();
 
