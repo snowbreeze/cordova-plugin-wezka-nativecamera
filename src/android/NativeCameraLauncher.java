@@ -11,7 +11,7 @@
 		distributed under the License is distributed on an "AS IS" BASIS,
 		WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 		See the License for the specific language governing permissions and
-   		limitations under the License.   			
+   		limitations under the License.
  */
 
 package com.wezka.nativecamera;
@@ -116,7 +116,17 @@ public class NativeCameraLauncher extends CordovaPlugin {
 	}
 
 	private File createCaptureFile() {
-		File photo = new File(getTempDirectoryPath(this.cordova.getActivity().getApplicationContext()), "Pic.jpg");
+		File oldFile = new File(getTempDirectoryPath(this.cordova.getActivity().getApplicationContext()), "Pic-" + this.date + ".jpg");
+		if(oldFile.exists())
+			oldFile.delete();
+		Calendar c = Calendar.getInstance();
+	    this.date = "" + c.get(Calendar.DAY_OF_MONTH)
+					+ c.get(Calendar.MONTH)
+					+ c.get(Calendar.YEAR)
+					+ c.get(Calendar.HOUR_OF_DAY)
+					+ c.get(Calendar.MINUTE)
+					+ c.get(Calendar.SECOND);
+		File photo = new File(getTempDirectoryPath(this.cordova.getActivity().getApplicationContext()), "Pic-" + this.date + ".jpg");
 		return photo;
 	}
 
@@ -226,7 +236,7 @@ public class NativeCameraLauncher extends CordovaPlugin {
 
 		return Bitmap.createScaledBitmap(bitmap, newWidth, newHeight, true);
 	}
-	
+
 	private Bitmap getRotatedBitmap(int rotate, Bitmap bitmap, ExifHelper exif) {
         Matrix matrix = new Matrix();
         matrix.setRotate(rotate);
