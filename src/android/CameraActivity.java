@@ -237,52 +237,13 @@ public class CameraActivity extends Activity implements SensorEventListener {
             });
         }
 
-        captureButton.setOnClickListener(new View.OnClickListener() {
-            public void onClick(View v) {
-                if (pressed || camera == null)
-                    return;
-
-                Parameters p = camera.getParameters();
-                p.setRotation(degrees);
-                camera.setParameters(p);
-                pressed = true;
-                // Auto-focus first, catching rare autofocus error
-                try {
-                    camera.autoFocus(new AutoFocusCallback() {
-                        public void onAutoFocus(boolean success, Camera camera) {
-                            // Catch take picture error
-                            try {
-                                camera.takePicture(null, null, mPicture);
-                            } catch (RuntimeException ex) {
-                                // takePicture crash. Ignore.
-                                Toast.makeText(getApplicationContext(),
-                                    "Error taking picture1", Toast.LENGTH_SHORT).show();
-                                Log.e(TAG, "Auto-focus crash");
-                            }
-                        }
-                    });
-                } catch (RuntimeException ex) {
-                    // Auto focus crash. Ignore.
-                    Toast.makeText(getApplicationContext(),
-                        "Error focusing2", Toast.LENGTH_SHORT).show();
-                    Log.e(TAG, "Auto-focus crash");
-                }
-            }
-        });
-
-    }
-
-    @Override
-    public boolean onKeyDown(int keyCode, KeyEvent event) {
-        if (camera == null)
-            return false;
-
-        if (keyCode == KeyEvent.KEYCODE_VOLUME_DOWN){
+        private attemptToTakePicture() {
+            if (pressed || camera == null)
+                return false;
             Parameters p = camera.getParameters();
             p.setRotation(degrees);
             camera.setParameters(p);
-            if (pressed || camera == null)
-                return false;
+
             pressed = true;
             // Auto-focus first, catching rare autofocus error
             try {
@@ -305,6 +266,25 @@ public class CameraActivity extends Activity implements SensorEventListener {
                     "Error focusing4", Toast.LENGTH_SHORT).show();
                 Log.e(TAG, "Auto-focus crash");
             }
+        }
+
+        captureButton.setOnClickListener(new View.OnClickListener() {
+            public void onClick(View v) {
+                if (pressed || camera == null)
+                    return;
+                attemptToTakePicture();
+            }
+        });
+
+    }
+
+    @Override
+    public boolean onKeyDown(int keyCode, KeyEvent event) {
+        if (camera == null)
+            return false;
+
+        if (keyCode == KeyEvent.KEYCODE_VOLUME_DOWN){
+            attemptToTakePicture();
             return true;
         } else {
             return super.onKeyDown(keyCode, event);
