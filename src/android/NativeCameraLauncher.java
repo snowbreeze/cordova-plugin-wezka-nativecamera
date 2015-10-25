@@ -23,6 +23,7 @@ import java.io.OutputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
+import java.util.Calendar;
 
 import com.wezka.nativecamera.ExifHelper;
 import org.apache.cordova.CallbackContext;
