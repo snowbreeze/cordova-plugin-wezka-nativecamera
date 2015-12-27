@@ -14,7 +14,7 @@
    		limitations under the License.
  */
 
-package com.wezka.nativecamera;
+package com.tmantman.nativecamera;
 
 import android.app.Activity;
 import android.content.pm.PackageManager;
@@ -274,8 +274,8 @@ public class CameraActivity extends Activity implements SensorEventListener {
                         camera.takePicture(null, null, mPicture);
                     } catch (RuntimeException ex) {
                         // takePicture crash. Ignore.
-                        Toast.makeText(getApplicationContext(),
-                            "Error taking picture3", Toast.LENGTH_SHORT).show();
+//                        Toast.makeText(getApplicationContext(),
+//                            "Error taking picture3", Toast.LENGTH_SHORT).show();
                         Log.e(TAG, "Auto-focus crash");
                     }
                 }
