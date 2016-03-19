@@ -144,6 +144,7 @@ public class NativeCameraLauncher extends CordovaPlugin {
 						+ "/Pic-" + this.date + ".jpg");
 				exif.readExifData();
 				rotate = exif.getOrientation();
+				Log.i(LOG_TAG, "Uncompressed image rotation value: " + rotate);
 
 				// Read in bitmap of captured image
 				Bitmap bitmap;
@@ -177,6 +178,8 @@ public class NativeCameraLauncher extends CordovaPlugin {
 				// Restore exif data to file
 				exif.createOutFile(this.imageUri.getPath());
 				exif.writeExifData();
+
+				Log.i(LOG_TAG, "Final Exif orientation value: " + exif.getOrientation());
 
 				// Send Uri back to JavaScript for viewing image
 				this.callbackContext.sendPluginResult(new PluginResult(PluginResult.Status.OK, this.imageUri.toString()));
@@ -241,14 +244,17 @@ public class NativeCameraLauncher extends CordovaPlugin {
 
 	private Bitmap getRotatedBitmap(int rotate, Bitmap bitmap, ExifHelper exif) {
         Matrix matrix = new Matrix();
+		Log.i(LOG_TAG, "Setting rotation on compressed image: " + rotate);
         matrix.setRotate(rotate);
         try
         {
+			Log.d(LOG_TAG, "getRotatedBitmap NOT OUT OF MEMORY");
             bitmap = Bitmap.createBitmap(bitmap, 0, 0, bitmap.getWidth(), bitmap.getHeight(), matrix, true);
             exif.resetOrientation();
         }
         catch (OutOfMemoryError oom)
         {
+			Log.d(LOG_TAG, "getRotatedBitmap OUT OF MEMORY");
             // You can run out of memory if the image is very large:
             // http://simonmacdonald.blogspot.ca/2012/07/change-to-camera-code-in-phonegap-190.html
             // If this happens, simply do not rotate the image and return it unmodified.

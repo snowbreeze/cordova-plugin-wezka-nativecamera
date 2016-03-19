@@ -85,6 +85,7 @@ public class CameraActivity extends Activity implements SensorEventListener {
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
+        Log.d(TAG, "Camera Activity Started!");
         super.onCreate(savedInstanceState);
 
         //setContentView(R.layout.activity_main);
@@ -262,7 +263,16 @@ public class CameraActivity extends Activity implements SensorEventListener {
 
     private void attemptToTakePicture() {
         Parameters p = camera.getParameters();
-        p.setRotation(degrees);
+        android.hardware.Camera.CameraInfo info = new android.hardware.Camera.CameraInfo();
+        android.hardware.Camera.getCameraInfo(cam, info);
+        Log.d(TAG, "Camera rotation detected to be: " + info.orientation);
+        int toRotate = info.orientation + degrees - 90;
+        Log.d(TAG, "To rotate before checking 0/360 bounds: " + toRotate);
+        if (toRotate < 0 || toRotate > 360) {
+            toRotate = (toRotate < 0) ? toRotate + 360 : toRotate - 360;
+        }
+        Log.d(TAG, "To rotate, after applying 0/360 bound rotation: " + toRotate);
+        p.setRotation(toRotate);
         camera.setParameters(p);
         pressed = true;
         // Auto-focus first, catching rare autofocus error
@@ -283,7 +293,7 @@ public class CameraActivity extends Activity implements SensorEventListener {
         } catch (RuntimeException ex) {
             // Auto focus crash. Ignore.
             Toast.makeText(getApplicationContext(),
-                "Error focusing4", Toast.LENGTH_SHORT).show();
+                "Error focusing", Toast.LENGTH_SHORT).show();
             Log.e(TAG, "Auto-focus crash");
         }
     }
@@ -297,11 +307,11 @@ public class CameraActivity extends Activity implements SensorEventListener {
                 FileOutputStream fos = new FileOutputStream(pictureFile);
                 fos.write(data);
                 fos.close();
-                Log.d(TAG, "File written to filesystem. ");
+                Log.d(TAG, "File successfully written to filesystem. ");
             } catch (FileNotFoundException e) {
-                Log.d(TAG, "File not found: 5" + e.getMessage());
+                Log.d(TAG, "File not found: " + e.getMessage());
             } catch (IOException e) {
-                Log.d(TAG, "Error accessing file: 6" + e.getMessage());
+                Log.d(TAG, "Error accessing file: " + e.getMessage());
             }
             setResult(RESULT_OK);
             pressed = false;
@@ -318,7 +328,7 @@ public class CameraActivity extends Activity implements SensorEventListener {
             } catch (RuntimeException ex) {
                 // Camera opening error. Warn user
                 Toast.makeText(getApplicationContext(),
-                    "Unable to use camera7", Toast.LENGTH_SHORT).show();
+                    "Unable to use camera", Toast.LENGTH_SHORT).show();
                 Log.e(TAG, "Camera open error: " + ex.getMessage());
             }
         }
