@@ -168,29 +168,29 @@ public class NativeCameraLauncher extends CordovaPlugin {
 					return;
 				}
 
-				Log.i(LOG_TAG, "*Memory before scaling: *");
-				Log.i(LOG_TAG, "getAllocationByteCount: " + bitmap.getAllocationByteCount());
-				Log.i(LOG_TAG, "getByteCount: " + bitmap.getByteCount());
+				// Log.i(LOG_TAG, "*Memory before scaling: *");
+				// Log.i(LOG_TAG, "getAllocationByteCount: " + bitmap.getAllocationByteCount());
+				// Log.i(LOG_TAG, "getByteCount: " + bitmap.getByteCount());
 
 				bitmap = scaleBitmap(bitmap);
 				//Immediately clear the memory associated with previous bitmap
 				System.gc();
 
-				Log.i(LOG_TAG, "*Memory after scaling: *");
-				Log.i(LOG_TAG, "getAllocationByteCount: " + bitmap.getAllocationByteCount());
-				Log.i(LOG_TAG, "getByteCount: " + bitmap.getByteCount());
+				// Log.i(LOG_TAG, "*Memory after scaling: *");
+				// Log.i(LOG_TAG, "getAllocationByteCount: " + bitmap.getAllocationByteCount());
+				// Log.i(LOG_TAG, "getByteCount: " + bitmap.getByteCount());
 
 				// Add compressed version of captured image to returned media
 				// store Uri
-				Log.i(LOG_TAG, "*First rotate then compress*");
-				Log.i(LOG_TAG, "getAllocationByteCount: " + bitmap.getAllocationByteCount());
-				Log.i(LOG_TAG, "getByteCount: " + bitmap.getByteCount());
+				// Log.i(LOG_TAG, "*First rotate then compress*");
+				// Log.i(LOG_TAG, "getAllocationByteCount: " + bitmap.getAllocationByteCount());
+				// Log.i(LOG_TAG, "getByteCount: " + bitmap.getByteCount());
 				bitmap = getRotatedBitmap(rotate, bitmap, exif);
 				Log.i(LOG_TAG, "URI: " + this.imageUri.toString());
 				OutputStream os = this.cordova.getActivity().getContentResolver()
 						.openOutputStream(this.imageUri);
 				boolean success = bitmap.compress(Bitmap.CompressFormat.JPEG, this.mQuality, os);
-				Log.i(LOG_TAG, "Compression success: " + success);
+				// Log.i(LOG_TAG, "Compression success: " + success);
 				os.close();
 				//Clear the memory
 				bitmap.recycle();
@@ -206,15 +206,15 @@ public class NativeCameraLauncher extends CordovaPlugin {
 					bitmap = android.graphics.BitmapFactory
 							.decodeStream(resolver.openInputStream(uri));
 				}
-				Log.i(LOG_TAG, "*After compression*");
-				Log.i(LOG_TAG, "getAllocationByteCount: " + bitmap.getAllocationByteCount());
-				Log.i(LOG_TAG, "getByteCount: " + bitmap.getByteCount());
+				// Log.i(LOG_TAG, "*After compression*");
+				// Log.i(LOG_TAG, "getAllocationByteCount: " + bitmap.getAllocationByteCount());
+				// Log.i(LOG_TAG, "getByteCount: " + bitmap.getByteCount());
 
 				// Restore exif data to file
 				exif.createOutFile(this.imageUri.getPath());
 				exif.writeExifData();
 
-				Log.i(LOG_TAG, "Final Exif orientation value: " + exif.getOrientation());
+				// Log.i(LOG_TAG, "Final Exif orientation value: " + exif.getOrientation());
 
 				// Send Uri back to JavaScript for viewing image
 				this.callbackContext.sendPluginResult(new PluginResult(PluginResult.Status.OK, this.imageUri.toString()));
