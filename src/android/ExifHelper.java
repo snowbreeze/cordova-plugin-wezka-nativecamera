@@ -16,7 +16,7 @@
        specific language governing permissions and limitations
        under the License.
 */
-package com.wezka.nativecamera;
+package com.tmantman.nativecamera;
 
 import java.io.IOException;
 
@@ -181,5 +181,5 @@ public class ExifHelper {
 
     public void resetOrientation() {
         this.orientation = "" + ExifInterface.ORIENTATION_NORMAL;
-    }    
+    }
 }
