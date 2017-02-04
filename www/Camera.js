@@ -62,7 +62,7 @@ cameraExport.getSafePicture = function(successCallback, errorCallback, options) 
     var args = [quality, destinationType, sourceType, targetWidth, targetHeight, encodingType,
                 mediaType, allowEdit, correctOrientation, saveToPhotoAlbum, popoverOptions, cameraDirection];
 
-    exec(successCallback, errorCallback, "Camera", "takePicture", args);
+    exec(successCallback, errorCallback, "Camera", "takeSafePicture", args);
     return new CameraPopoverHandle();
 };
 

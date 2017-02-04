@@ -91,14 +91,14 @@ public class NativeCameraLauncher extends CordovaPlugin {
 		String result = "";
 		this.callbackContext = callbackContext;
 		try {
-			if (action.equals("takePicture")) {
+			if (action.equals("takeSafePicture")) {
 				this.targetHeight = 0;
 				this.targetWidth = 0;
 				this.mQuality = 80;
 				this.targetHeight = args.getInt(4);
 				this.targetWidth = args.getInt(3);
 				this.mQuality = args.getInt(0);
-				this.takePicture();
+				this.takeSafePicture();
 				PluginResult r = new PluginResult(PluginResult.Status.NO_RESULT);
 				r.setKeepCallback(true);
 				callbackContext.sendPluginResult(r);
@@ -112,7 +112,7 @@ public class NativeCameraLauncher extends CordovaPlugin {
 		}
 	}
 
-	public void takePicture() {
+	public void takeSafePicture() {
 		// Save the number of images currently on disk for later
 		Intent intent = new Intent(this.cordova.getActivity().getApplicationContext(), CameraActivity.class);
 		this.photo = createCaptureFile();
