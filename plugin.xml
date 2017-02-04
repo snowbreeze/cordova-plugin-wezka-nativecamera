@@ -5,16 +5,16 @@
       version="0.1.9">
     <name>TmanTman Native Camera</name>
 
-    <js-module src="www/CameraConstants.js" name="safeCamera">
-        <clobbers target="safeCamera" />
+    <js-module src="www/CameraConstants.js" name="Camera">
+        <clobbers target="Camera" />
     </js-module>
 
     <js-module src="www/CameraPopoverOptions.js" name="CameraPopoverOptions">
         <clobbers target="CameraPopoverOptions" />
     </js-module>
 
-    <js-module src="www/Camera.js" name="safeCamera">
-        <clobbers target="navigator.safeCamera" />
+    <js-module src="www/Camera.js" name="camera">
+        <clobbers target="navigator.SafeCamera" />
     </js-module>
 
     <!-- android -->
