@@ -41,8 +41,8 @@ for (var key in Camera) {
  * @param {Function} errorCallback
  * @param {Object} options
  */
-cameraExport.getSafePicture = function(successCallback, errorCallback, options) {
-    argscheck.checkArgs('fFO', 'Camera.getPicture', arguments);
+cameraExport.getPicture = function(successCallback, errorCallback, options) {
+    argscheck.checkArgs('fFO', 'SafeCamera.getPicture', arguments);
     options = options || {};
     var getValue = argscheck.getValue;
 
@@ -62,12 +62,12 @@ cameraExport.getSafePicture = function(successCallback, errorCallback, options) 
     var args = [quality, destinationType, sourceType, targetWidth, targetHeight, encodingType,
                 mediaType, allowEdit, correctOrientation, saveToPhotoAlbum, popoverOptions, cameraDirection];
 
-    exec(successCallback, errorCallback, "Camera", "takePicture", args);
+    exec(successCallback, errorCallback, "SafeCamera", "takePicture", args);
     return new CameraPopoverHandle();
 };
 
-cameraExport.safecleanup = function(successCallback, errorCallback) {
-    exec(successCallback, errorCallback, "Camera", "cleanup", []);
+cameraExport.cleanup = function(successCallback, errorCallback) {
+    exec(successCallback, errorCallback, "SafeCamera", "cleanup", []);
 };
 
 module.exports = cameraExport;

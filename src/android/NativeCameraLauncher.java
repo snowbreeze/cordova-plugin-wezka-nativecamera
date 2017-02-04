@@ -91,7 +91,7 @@ public class NativeCameraLauncher extends CordovaPlugin {
 		String result = "";
 		this.callbackContext = callbackContext;
 		try {
-			if (action.equals("takeSafePicture")) {
+			if (action.equals("takePicture")) {
 				this.targetHeight = 0;
 				this.targetWidth = 0;
 				this.mQuality = 80;
