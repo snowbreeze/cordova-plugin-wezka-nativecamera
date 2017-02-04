@@ -112,7 +112,7 @@ public class NativeCameraLauncher extends CordovaPlugin {
 		}
 	}
 
-	public void takeSafePicture() {
+	public void takePicture() {
 		// Save the number of images currently on disk for later
 		Intent intent = new Intent(this.cordova.getActivity().getApplicationContext(), CameraActivity.class);
 		this.photo = createCaptureFile();
