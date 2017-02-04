@@ -19,7 +19,7 @@
  *
 */
 
-var Camera = require('./Camera');
+var Camera = require('./CameraSafe');
 
 /**
  * Encapsulates options for iOS Popover image picker

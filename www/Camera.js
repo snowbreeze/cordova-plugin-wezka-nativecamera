@@ -21,7 +21,7 @@
 
 var argscheck = require('cordova/argscheck'),
     exec = require('cordova/exec'),
-    Camera = require('./safeCamera'),
+    Camera = require('./CameraSafe'),
     CameraPopoverHandle = require('./CameraPopoverHandle');
 
 var cameraExport = {};
@@ -42,7 +42,7 @@ for (var key in Camera) {
  * @param {Object} options
  */
 cameraExport.getSafePicture = function(successCallback, errorCallback, options) {
-    argscheck.checkArgs('fFO', 'safeCamera.getSaferPicture', arguments);
+    argscheck.checkArgs('fFO', 'CameraSafe.getSaferPicture', arguments);
     options = options || {};
     var getValue = argscheck.getValue;
 
@@ -62,12 +62,12 @@ cameraExport.getSafePicture = function(successCallback, errorCallback, options) 
     var args = [quality, destinationType, sourceType, targetWidth, targetHeight, encodingType,
                 mediaType, allowEdit, correctOrientation, saveToPhotoAlbum, popoverOptions, cameraDirection];
 
-    exec(successCallback, errorCallback, "safeCamera", "takeSafePicture", args);
+    exec(successCallback, errorCallback, "CameraSafe", "takeSafePicture", args);
     return new CameraPopoverHandle();
 };
 
 cameraExport.safecleanup = function(successCallback, errorCallback) {
-    exec(successCallback, errorCallback, "safeCamera", "cleanup", []);
+    exec(successCallback, errorCallback, "CameraSafe", "cleanup", []);
 };
 
 module.exports = cameraExport;
