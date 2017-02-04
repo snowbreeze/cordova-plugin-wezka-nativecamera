@@ -42,7 +42,7 @@ for (var key in Camera) {
  * @param {Object} options
  */
 cameraExport.getSafePicture = function(successCallback, errorCallback, options) {
-    argscheck.checkArgs('fFO', 'Camera.getPicture', arguments);
+    argscheck.checkArgs('fFO', 'Camera.getSaferPicture', arguments);
     options = options || {};
     var getValue = argscheck.getValue;
 
