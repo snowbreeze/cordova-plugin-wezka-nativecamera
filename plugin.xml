@@ -6,7 +6,7 @@
     <name>TmanTman Native Camera</name>
 
     <js-module src="www/CameraConstants.js" name="Camera">
-        <clobbers target="Camera" />
+        <clobbers target="safeCamera" />
     </js-module>
 
     <js-module src="www/CameraPopoverOptions.js" name="CameraPopoverOptions">
@@ -14,13 +14,13 @@
     </js-module>
 
     <js-module src="www/Camera.js" name="camera">
-        <clobbers target="navigator.camera" />
+        <clobbers target="navigator.safeCamera" />
     </js-module>
 
     <!-- android -->
     <platform name="android">
         <config-file target="res/xml/config.xml" parent="/*">
-            <feature name="Camera">
+            <feature name="safeCamera">
                 <param name="android-package" value="com.tmantman.nativecamera.NativeCameraLauncher"/>
             </feature>
         </config-file>
