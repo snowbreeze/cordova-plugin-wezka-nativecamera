@@ -21,7 +21,7 @@
 
 var argscheck = require('cordova/argscheck'),
     exec = require('cordova/exec'),
-    Camera = require('./Camera'),
+    Camera = require('./SafeCamera'),
     CameraPopoverHandle = require('./CameraPopoverHandle');
 
 var cameraExport = {};
