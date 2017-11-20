@@ -8,7 +8,7 @@
     <!-- android -->
     <platform name="android">
         <config-file target="res/xml/config.xml" parent="/*">
-            <feature name="Camera">
+            <feature name="SafeCamera">
                 <param name="android-package" value="com.wezka.nativecamera.NativeCameraLauncher"/>
             </feature>
         </config-file>
