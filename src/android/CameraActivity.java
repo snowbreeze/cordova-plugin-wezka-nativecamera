@@ -11,10 +11,10 @@
 		distributed under the License is distributed on an "AS IS" BASIS,
 		WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 		See the License for the specific language governing permissions and
-   		limitations under the License.   			
+   		limitations under the License.
  */
 
-package com.wezka.nativecamera;
+package com.tmantman.nativecamera;
 
 import android.app.Activity;
 import android.content.pm.PackageManager;
@@ -67,8 +67,8 @@ public class CameraActivity extends Activity implements SensorEventListener {
     private int cam = 0;
     private boolean pressed = false;
     private int degrees = 0;
-    private boolean isFlash = false;
-    private boolean isFrontCamera = false;
+    private Boolean isFlash = false;
+    private Boolean isFrontCamera = false;
     SensorManager sm;
     WindowManager mWindowManager;
 
@@ -85,6 +85,7 @@ public class CameraActivity extends Activity implements SensorEventListener {
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
+        Log.d(TAG, "Camera Activity Started!");
         super.onCreate(savedInstanceState);
 
         //setContentView(R.layout.activity_main);
@@ -100,6 +101,9 @@ public class CameraActivity extends Activity implements SensorEventListener {
         final int imgFlashAuto = getResources().getIdentifier("@drawable/btn_flash_auto", null, getPackageName());
         final int imgFlashOn = getResources().getIdentifier("@drawable/btn_flash_on", null, getPackageName());
         viewfinderHalfPx = pxFromDp(72)/2;
+        previewHolder = preview.getHolder();
+        previewHolder.setType(SurfaceHolder.SURFACE_TYPE_PUSH_BUFFERS);
+        previewHolder.addCallback(surfaceCallback);
 
         sm = (SensorManager) getSystemService(SENSOR_SERVICE);
         if(sm.getSensorList(Sensor.TYPE_ACCELEROMETER).size()!=0){
@@ -151,32 +155,36 @@ public class CameraActivity extends Activity implements SensorEventListener {
 
                 Parameters parameters = camera.getParameters();
 
-                if (parameters.getMaxNumFocusAreas() > 0) {
+                try {
+                    if (parameters.getMaxNumFocusAreas() > 0) {
 
-                    if(event.getX() - viewfinderHalfPx < 0) {
-                        viewfinder.setX(0);
-                    } else if(event.getX() + viewfinderHalfPx > screenWidth) {
-                        viewfinder.setX(screenWidth - viewfinderHalfPx*2);
-                    } else {
-                        viewfinder.setX(event.getX() - viewfinderHalfPx);
+                        if(event.getX() - viewfinderHalfPx < 0) {
+                            viewfinder.setX(0);
+                        } else if(event.getX() + viewfinderHalfPx > screenWidth) {
+                            viewfinder.setX(screenWidth - viewfinderHalfPx*2);
+                        } else {
+                            viewfinder.setX(event.getX() - viewfinderHalfPx);
+                        }
+
+                        if(event.getY() - viewfinderHalfPx < 0) {
+                            viewfinder.setY(0);
+                        } else if(event.getY() + viewfinderHalfPx > screenHeight - pxFromDp(125)) {
+                            viewfinder.setY((screenHeight - pxFromDp(125)) - viewfinderHalfPx*2);
+                        } else {
+                            viewfinder.setY(event.getY() - viewfinderHalfPx);
+                        }
+
+                        List<Camera.Area> focusArea = new ArrayList<Camera.Area>();
+                        focusArea.add(new Camera.Area(focusRect, 750));
+                        parameters.setFocusAreas(focusArea);
+                        if(parameters.getMaxNumMeteringAreas() > 0) {
+                            parameters.setMeteringAreas(focusArea);
+                        }
+
+                        camera.setParameters(parameters);
                     }
-
-                    if(event.getY() - viewfinderHalfPx < 0) {
-                        viewfinder.setY(0);
-                    } else if(event.getY() + viewfinderHalfPx > screenHeight - pxFromDp(125)) {
-                        viewfinder.setY((screenHeight - pxFromDp(125)) - viewfinderHalfPx*2);
-                    } else {
-                        viewfinder.setY(event.getY() - viewfinderHalfPx);
-                    }
-
-                    List<Camera.Area> focusArea = new ArrayList<Camera.Area>();
-                    focusArea.add(new Camera.Area(focusRect, 750));
-                    parameters.setFocusAreas(focusArea);
-                    if(parameters.getMaxNumMeteringAreas() > 0) {
-                        parameters.setMeteringAreas(focusArea);
-                    }
-
-                    camera.setParameters(parameters);
+                } catch (NoSuchMethodError ex) {
+                    // Ignore as old Androids do not support
                 }
                 return true;
             }
@@ -234,32 +242,7 @@ public class CameraActivity extends Activity implements SensorEventListener {
             public void onClick(View v) {
                 if (pressed || camera == null)
                     return;
-                
-                Parameters p = camera.getParameters();
-                p.setRotation(degrees);
-                camera.setParameters(p);
-                pressed = true;
-                // Auto-focus first, catching rare autofocus error
-                try {
-                    camera.autoFocus(new AutoFocusCallback() {
-                        public void onAutoFocus(boolean success, Camera camera) {
-                            // Catch take picture error
-                            try {
-                                camera.takePicture(null, null, mPicture);
-                            } catch (RuntimeException ex) {
-                                // takePicture crash. Ignore.
-                                Toast.makeText(getApplicationContext(), 
-                                    "Error taking picture", Toast.LENGTH_SHORT).show();
-                                Log.e(TAG, "Auto-focus crash");
-                            }
-                        }
-                    });
-                } catch (RuntimeException ex) {
-                    // Auto focus crash. Ignore.
-                    Toast.makeText(getApplicationContext(), 
-                        "Error focusing", Toast.LENGTH_SHORT).show();
-                    Log.e(TAG, "Auto-focus crash");
-                }            
+                attemptToTakePicture();
             }
         });
 
@@ -267,37 +250,51 @@ public class CameraActivity extends Activity implements SensorEventListener {
 
     @Override
     public boolean onKeyDown(int keyCode, KeyEvent event) {
+        if (camera == null)
+            return false;
+
         if (keyCode == KeyEvent.KEYCODE_VOLUME_DOWN){
-            Parameters p = camera.getParameters();
-            p.setRotation(degrees);
-            camera.setParameters(p);
-            if (pressed || camera == null)
-                return false;
-            pressed = true;
-            // Auto-focus first, catching rare autofocus error
-            try {
-                camera.autoFocus(new AutoFocusCallback() {
-                    public void onAutoFocus(boolean success, Camera camera) {
-                        // Catch take picture error
-                        try {
-                            camera.takePicture(null, null, mPicture);
-                        } catch (RuntimeException ex) {
-                            // takePicture crash. Ignore.
-                            Toast.makeText(getApplicationContext(), 
-                                "Error taking picture", Toast.LENGTH_SHORT).show();
-                            Log.e(TAG, "Auto-focus crash");
-                        }
-                    }
-                });
-            } catch (RuntimeException ex) {
-                // Auto focus crash. Ignore.
-                Toast.makeText(getApplicationContext(), 
-                    "Error focusing", Toast.LENGTH_SHORT).show();
-                Log.e(TAG, "Auto-focus crash");
-            }            
+            attemptToTakePicture();
             return true;
         } else {
             return super.onKeyDown(keyCode, event);
+        }
+    }
+
+    private void attemptToTakePicture() {
+        Parameters p = camera.getParameters();
+        android.hardware.Camera.CameraInfo info = new android.hardware.Camera.CameraInfo();
+        android.hardware.Camera.getCameraInfo(cam, info);
+        Log.d(TAG, "Camera rotation detected to be: " + info.orientation);
+        int toRotate = info.orientation + degrees - 90;
+        Log.d(TAG, "To rotate before checking 0/360 bounds: " + toRotate);
+        if (toRotate < 0 || toRotate > 360) {
+            toRotate = (toRotate < 0) ? toRotate + 360 : toRotate - 360;
+        }
+        Log.d(TAG, "To rotate, after applying 0/360 bound rotation: " + toRotate);
+        p.setRotation(toRotate);
+        camera.setParameters(p);
+        pressed = true;
+        // Auto-focus first, catching rare autofocus error
+        try {
+            camera.autoFocus(new AutoFocusCallback() {
+                public void onAutoFocus(boolean success, Camera camera) {
+                    // Catch take picture error
+                    try {
+                        camera.takePicture(null, null, mPicture);
+                    } catch (RuntimeException ex) {
+                        // takePicture crash. Ignore.
+//                        Toast.makeText(getApplicationContext(),
+//                            "Error taking picture3", Toast.LENGTH_SHORT).show();
+                        Log.e(TAG, "Auto-focus crash");
+                    }
+                }
+            });
+        } catch (RuntimeException ex) {
+            // Auto focus crash. Ignore.
+            Toast.makeText(getApplicationContext(),
+                "Error focusing", Toast.LENGTH_SHORT).show();
+            Log.e(TAG, "Auto-focus crash");
         }
     }
 
@@ -310,6 +307,7 @@ public class CameraActivity extends Activity implements SensorEventListener {
                 FileOutputStream fos = new FileOutputStream(pictureFile);
                 fos.write(data);
                 fos.close();
+                Log.d(TAG, "File successfully written to filesystem. ");
             } catch (FileNotFoundException e) {
                 Log.d(TAG, "File not found: " + e.getMessage());
             } catch (IOException e) {
@@ -324,11 +322,15 @@ public class CameraActivity extends Activity implements SensorEventListener {
     @Override
     public void onResume() {
         super.onResume();
-        previewHolder = preview.getHolder();
-        previewHolder.setType(SurfaceHolder.SURFACE_TYPE_PUSH_BUFFERS);
-        previewHolder.addCallback(surfaceCallback);
         if (Camera.getNumberOfCameras() >= 1) {
-            camera = Camera.open(cam);
+            try {
+                camera = Camera.open(cam);
+            } catch (RuntimeException ex) {
+                // Camera opening error. Warn user
+                Toast.makeText(getApplicationContext(),
+                    "Unable to use camera", Toast.LENGTH_SHORT).show();
+                Log.e(TAG, "Camera open error: " + ex.getMessage());
+            }
         }
 
         // Initialize preview if surface still exists
@@ -354,10 +356,12 @@ public class CameraActivity extends Activity implements SensorEventListener {
 
     @Override
     public void onPause() {
-        if (inPreview) {
-            camera.stopPreview();
+        if (camera != null) {
+            if (inPreview) {
+                camera.stopPreview();
+            }
+            camera.release();
         }
-        camera.release();
         camera = null;
         inPreview = false;
         super.onPause();
@@ -558,7 +562,3 @@ public class CameraActivity extends Activity implements SensorEventListener {
     }
 
 }
-
-
-
-

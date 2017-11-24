@@ -1,28 +1,27 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <plugin xmlns="http://www.phonegap.com/ns/plugins/1.0"
-           id="com.wezka.nativecamera"
-      version="0.1.2">
-    <name>Wezka Native Camera</name>
+           id="com.tmantman.nativecamera"
+      version="0.1.9">
+    <name>TmanTman Native Camera</name>
 
-     <js-module src="www/CameraConstants.js" name="SafeCamera">
-            <clobbers target="SafeCamera" />
-        </js-module>
+    <js-module src="www/CameraConstants.js" name="SafeCamera">
+        <clobbers target="SafeCamera" />
+    </js-module>
 
-          <js-module src="www/Camera.js" name="SafeCamera">
-            <clobbers target="navigator.SafeCamera" />
-        </js-module>
-          
+    <js-module src="www/CameraPopoverOptions.js" name="CameraPopoverOptions">
+        <clobbers target="CameraPopoverOptions" />
+    </js-module>
 
-        <js-module src="www/CameraPopoverOptions.js" name="CameraPopoverOptions">
-            <clobbers target="CameraPopoverOptions" />
-        </js-module>
+    <js-module src="www/Camera.js" name="safecamera">
+        <clobbers target="navigator.SafeCamera" />
+    </js-module>
 
     <!-- android -->
     <platform name="android">
         <config-file target="res/xml/config.xml" parent="/*">
             <feature name="SafeCamera">
-                <param name="android-package" value="com.wezka.nativecamera.NativeCameraLauncher"/>
+                <param name="android-package" value="com.tmantman.nativecamera.NativeCameraLauncher"/>
             </feature>
         </config-file>
 
@@ -33,18 +32,17 @@
         </config-file>
 
         <config-file target="AndroidManifest.xml" parent="/manifest/application">
-            <activity 
-                android:label="nativecameraplugin" 
-                android:name="com.wezka.nativecamera.CameraActivity" 
-                android:screenOrientation="portrait" 
+            <activity
+                android:label="nativecameraplugin"
+                android:name="com.tmantman.nativecamera.CameraActivity"
+                android:screenOrientation="portrait"
                 android:theme="@android:style/Theme.NoTitleBar.Fullscreen">
             </activity>
         </config-file>
 
-        <source-file src="src/android/CameraActivity.java" target-dir="src/com/wezka/nativecamera" />
-        <source-file src="src/android/NativeCameraLauncher.java" target-dir="src/com/wezka/nativecamera" />
-        <source-file src="src/android/ExifHelper.java" target-dir="src/com/wezka/nativecamera" />
-        <source-file src="src/android/PermissionHelper.java" target-dir="src/com/wezka/nativecamera" />
+        <source-file src="src/android/CameraActivity.java" target-dir="src/com/tmantman/nativecameraplugin" />
+        <source-file src="src/android/NativeCameraLauncher.java" target-dir="src/com/tmantman/nativecameraplugin" />
+        <source-file src="src/android/ExifHelper.java" target-dir="src/com/tmantman/nativecameraplugin" />
         <source-file src="src/android/nativecameraplugin.xml" target-dir="res/layout" />
         <source-file src="res/btn_shot.png" target-dir="res/drawable" />
         <source-file src="res/btn_flip.png" target-dir="res/drawable" />
@@ -57,9 +55,6 @@
             <clobbers target="CameraPopoverHandle" />
         </js-module>
 
-
-
-      
      </platform>
-          
+
 </plugin>
