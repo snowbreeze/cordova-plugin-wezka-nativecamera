@@ -5,6 +5,19 @@
       version="0.1.2">
     <name>Wezka Native Camera</name>
 
+     <js-module src="www/CameraConstants.js" name="SafeCamera">
+            <clobbers target="SafeCamera" />
+        </js-module>
+
+          <js-module src="www/Camera.js" name="SafeCamera">
+            <clobbers target="navigator.SafeCamera" />
+        </js-module>
+          
+
+        <js-module src="www/CameraPopoverOptions.js" name="CameraPopoverOptions">
+            <clobbers target="CameraPopoverOptions" />
+        </js-module>
+
     <!-- android -->
     <platform name="android">
         <config-file target="res/xml/config.xml" parent="/*">
@@ -44,18 +57,9 @@
             <clobbers target="CameraPopoverHandle" />
         </js-module>
 
-        <js-module src="www/CameraConstants.js" name="SafeCamera">
-            <clobbers target="SafeCamera" />
-        </js-module>
 
-        <js-module src="www/CameraPopoverOptions.js" name="CameraPopoverOptions">
-            <clobbers target="CameraPopoverOptions" />
-        </js-module>
 
-        <js-module src="www/Camera.js" name="SafeCamera">
-            <clobbers target="navigator.SafeCamera" />
-        </js-module>
-          
+      
      </platform>
           
 </plugin>
